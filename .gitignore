@@ -9,3 +9,5 @@ __pycache__/
 
 # envs and configs
 *.ini
+venv/
+env/
