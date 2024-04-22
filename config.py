@@ -1,5 +1,5 @@
 settings = {
-    'token': 'MTIzMjAyNTA0NzAwMzMwNDAyOA.GFoUdG.SYR7eHQFw-bnzQfplo1hSkmysXDh92hd3OxWlo',
+    'token': 'токен',
     'bot': 'shamer_bot',
     'id': 1232025047003304028,
     'prefix': '$'
