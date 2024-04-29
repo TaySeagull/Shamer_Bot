@@ -1,9 +1,7 @@
-#from utils import load_config
-from config import settings
+from utils import load_config
 import discord
 from discord.ext import commands
 import logging
-
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.DEBUG)
@@ -11,9 +9,9 @@ handler = logging.StreamHandler()
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-#SETTINGS = load_config('config.ini')
-#TOKEN = SETTINGS['TOKEN']
-#DB_PATH = SETTINGS['DB_PATH']
+settings = load_config('config.ini')
+TOKEN = settings['TOKEN']
+DB_PATH = settings['DB_PATH']
 
 
 class YLBotClient(discord.Client):
@@ -43,4 +41,4 @@ intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
 client = YLBotClient(intents=intents)
-client.run(settings["token"])
+client.run(settings["TOKEN"])
