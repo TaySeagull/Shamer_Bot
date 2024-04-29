@@ -25,16 +25,24 @@ class YLBotClient(discord.Client):
     async def on_member_join(self, member):
         await member.create_dm()
         await member.dm_channel.send(
-            f'Привет, {member.name}!'
-        )
+            f'Добро пожаловать, новое позорище, {member.name}!')
+        response = requests.get("https://dog.ceo/api/breeds/image/random")
+        data = response.json()
+        await message.channel.send(data['message'])
+
+    async def on_member_remove(self, member):
+        await member.dm_channel.send(
+            f'Хм, теперь мы все знаем, что {member.name} главное позорище')
 
     async def on_message(self, message):
         if message.author == self.user:
             return
-        if "привет" in message.content.lower():
-            await message.channel.send("И тебе привет")
         if "я позорище" in message.content.lower():
             await message.channel.send("Ну-ну, все мы не без греха")
+
+    @bot.slash_command(name='test_slash_command', description='Отвечает "Успешный тест!"')
+    async def __test(ctx):
+        await ctx.respond('Успешный тест!')
 
 
 intents = discord.Intents.default()
