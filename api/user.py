@@ -58,32 +58,33 @@ class User:
 
     @auth_require
     def get_lesson_ids(self, course_id: int, group_id: int):
-        url = 'https://lyceum.yandex.ru/api/student/lessons'
+        url = 'https://lms.yandex.ru/api/student/lessons'
         lessons = self.session.get(url, params={'groupId': group_id, 'courseId': course_id}).json()
         lesson_ids = list(lesson['id'] for lesson in lessons)
         return lesson_ids
 
     @auth_require
-    def get_all_tasks(self, lesson_id: int, course_id: int):
-        url = 'https://lyceum.yandex.ru/api/student/lessonTasks'
-        lesson_info = self.session.get(url, params={'courseId': course_id, 'lessonId': lesson_id}).json()
+    def get_all_tasks(self, lesson_id: int, course_id: int,  group_id: int):
+        url = 'https://lms.yandex.ru/api/student/lessonTasks'
+        lesson_info = self.session.get(url, params={'courseId': course_id, 'lessonId': lesson_id,
+                                       'groupId': group_id}).json()
         return lesson_info
 
     @auth_require
     def get_task(self, task_id: int, group_id: int):
-        url = f'https://lyceum.yandex.ru/api/student/tasks/{task_id}'
+        url = f'https://lms.yandex.ru/api/student/tasks/{task_id}'
         task = self.session.get(url, params={'groupId': group_id}).json()
         return task
 
     @auth_require
     def get_lesson_info(self, lesson_id: int, group_id: int, course_id: int):
-        url = f'https://lyceum.yandex.ru/api/student/lessons/{lesson_id}'
+        url = f'https://lms.yandex.ru/api/student/lessons/{lesson_id}'
         lesson_info = self.session.get(url, params={'groupId': group_id, 'courseId': course_id}).json()
         return lesson_info
 
     @auth_require
     def get_courses_groups_ids(self):
-        url = r'https://lyceum.yandex.ru/api/profile'
+        url = r'https://lms.yandex.ru/api/profile'
         courses = self.session.get(url=url, params={'onlyActiveCourses': True,
                                                     'withCoursesSummary': True,
                                                     'withExpelled': True}).json()
