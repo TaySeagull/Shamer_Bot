@@ -8,7 +8,7 @@ from api.user import User
 
 settings = load_config('config.ini')
 
-DB_PATH = settings['BOT']['DB_PATH']
+DB_PATH = settings.BOT.DB_PATH
 
 
 async def estimate_posorishe_level(user, course, group):
@@ -37,17 +37,22 @@ class Authentication(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='init')
-    async def init(self, ctx, group):
+    @commands.hybrid_command(name='init')
+    async def init(self, ctx, group: int):
         conn = await aiosqlite.connect(DB_PATH)
-        query = f'''INSERT INTO users (id, group, posorishe_level) VALUES ({ctx.author.id}, {group}, 0)'''
-        await conn.execute(query)
-        await conn.commit()
+        res = await conn.execute('SELECT * FROM users WHERE id = ?', (ctx.author.id, ))
+        if not res.fetchall():
+            query = str(f'''INSERT INTO users (id, student_group, posorishe_level) VALUES (?, ?, ?)''')
+            await conn.execute(query, (ctx.author.id, group, 0, ))
+            await conn.commit()
+            await ctx.reply('**Первичное опознание ~~позорища~~ учащегося - готово!**')
+        else:
+            await ctx.reply('Такое позорище уже есть в таблице!')
         await conn.close()
-        await ctx.send('**Первичное опознание ~~позорища~~ учащегося - готово!**')
 
-    @commands.command(name='my_level')
-    async def update_posorishe_level(self, ctx, login, password, group):
+    @commands.hybrid_command(name='my_level')
+    async def update_posorishe_level(self, ctx, login, password, course):
+        await ctx.message.delete()
         user = User(login, password)
         try:
             user.auth(user.login, user.password)
@@ -55,7 +60,7 @@ class Authentication(commands.Cog):
             await ctx.send('Введены неверные данные!')
 
         conn = await aiosqlite.connect(DB_PATH)
-        query = f'''SELECT course FROM users WHERE id = {ctx.author.id}'''
-        course = await conn.execute(query)
+        query = f'''SELECT student_group FROM users WHERE id = {ctx.author.id}'''
+        group = await conn.execute(query)
         await conn.close()
         new_level = estimate_posorishe_level(user, course, group)
