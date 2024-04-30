@@ -11,3 +11,6 @@ __pycache__/
 *.ini
 venv/
 env/
+
+# db
+*.sqlite3

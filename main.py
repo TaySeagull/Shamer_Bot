@@ -11,7 +11,7 @@ logger.addHandler(handler)
 
 settings = load_config('config.ini')
 TOKEN = settings['TOKEN']
-DB_PATH = settings['DB_PATH']
+DB_PATH = settings['DATABASE']['DB_PATH']
 
 
 class YLBotClient(discord.Client):
@@ -40,5 +40,8 @@ class YLBotClient(discord.Client):
 intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
-client = YLBotClient(intents=intents)
-client.run(settings["TOKEN"])
+client = YLBotClient(intents=intents, command_prefix='$')
+
+
+async def main():
+    await client.start(settings['TOKEN'])
